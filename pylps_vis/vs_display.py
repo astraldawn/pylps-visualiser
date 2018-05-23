@@ -9,10 +9,10 @@ class VSDisplay(BoxLayout):
     time = StringProperty()
     height = NumericProperty()
 
-    def __init__(self, visual_state, display_classes, position_funcs):
+    def __init__(self, visual_state, vis_config):
         super().__init__()
-        self.display_classes = display_classes
-        self.position_funcs = position_funcs
+        self.display_classes = vis_config.display_classes
+        self.position_funcs = vis_config.position_funcs
         self.height = 100
 
         self.identity = 'time' + str(visual_state.time)
