@@ -1,9 +1,10 @@
 from pylps.core import *
 from pylps.lps_data_structures import LPSConstant
 from pylps_vis.visualiser import *
+from kivy.uix.label import Label
 from collections import defaultdict
 
-initialise(max_time=5)
+initialise(max_time=10)
 
 create_fluents('location(_, _)')
 create_actions('move(_, _)', 'say(_)')
@@ -71,26 +72,6 @@ goal(make_clear(Block).frm(T1, T2)).requires(
 move(Block, Place).initiates(location(Block, Place))
 move(Block, _).terminates(location(Block, Place))
 
-# execute(solution_preference=SOLN_PREF_FIRST)
-
-# show_kb_log()
-
-kb_log = kb_display_log()
-
-
-class LocationDisplay():
-    def __init__(self, *args):
-        self.block_name = args[0]
-        self.x = args[1]
-        self.y = args[2]
-
-    def get_widget(self):
-        w = Label(
-            text=self.block_name,
-            pos=(self.x, self.y)
-        )
-        return w
-
 
 def generate_towers(locations):
     above = defaultdict(list)
@@ -117,8 +98,8 @@ def generate_towers(locations):
 
 
 def position_towers(towers):
-    START_X = -200
-    START_Y = -50
+    START_X = -300
+    START_Y = 0
     pos_args = []
 
     for t_id, tower in enumerate(towers):
@@ -131,9 +112,24 @@ def position_towers(towers):
 
 
 def location_pos(locations):
+    height = 200
     locations = sorted(locations)
     towers = generate_towers(locations)
-    return position_towers(towers)
+    return (height, position_towers(towers))
+
+
+class LocationDisplay():
+    def __init__(self, *args):
+        self.block_name = args[0].upper()
+        self.x = args[1]
+        self.y = args[2]
+
+    def get_widget(self):
+        w = Label(
+            text=self.block_name,
+            pos=(self.x, self.y)
+        )
+        return w
 
 
 display_classes = {

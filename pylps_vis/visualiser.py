@@ -1,4 +1,3 @@
-import asyncio
 import copy
 from collections import defaultdict
 
@@ -8,9 +7,8 @@ import kivy
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
 from kivy.properties import *
+from pylps_vis.vsdisplay import VSDisplay
 kivy.require('1.0.7')
 
 
@@ -33,57 +31,6 @@ class LogObject(object):
 
 class PylpsScreenManager(ScreenManager):
     pass
-
-
-class VSDisplay(BoxLayout):
-    identity = StringProperty()
-    time = StringProperty()
-
-    def __init__(self, visual_state, display_classes, position_funcs):
-        super().__init__()
-        self.display_classes = display_classes
-        self.position_funcs = position_funcs
-
-        self.identity = 'time' + str(visual_state.time)
-        self.visual_state = visual_state
-        self.time = str(self.visual_state.time)
-        self.displayed_actions = []
-        self.displayed_fluents = []
-        self.cnt = 0
-
-        for cls_name, cls in self.display_classes.items():
-            pos_func = self.position_funcs.get(cls_name, None)
-
-            if cls_name in self.visual_state.actions.keys():
-                states = self.visual_state.actions[cls_name]
-
-                if pos_func:
-                    states = pos_func(states)
-
-                for args in states:
-                    self.display(ACTION, cls, list(args))
-
-            if cls_name in self.visual_state.fluents.keys():
-                states = self.visual_state.fluents[cls_name]
-                if pos_func:
-                    states = pos_func(states)
-
-                for args in states:
-                    self.display(FLUENT, cls, list(args))
-
-    def display(self, d_type, cls, args):
-
-        w = cls(*args).get_widget()
-
-        self.ids.tpdisplay.add_widget(w)
-
-        if d_type is ACTION:
-            self.displayed_actions.append(w)
-
-        if d_type is FLUENT:
-            self.displayed_fluents.append(w)
-
-        # print(self.displayed_fluents[0].parent)
 
 
 class PylpsMainScreen(Screen):
