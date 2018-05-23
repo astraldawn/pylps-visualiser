@@ -53,13 +53,15 @@ class LocationDisplay():
     def __init__(self, *args):
         self.value = args[0]
         self.pos = args[1]
+        self.colour = args[2]
         self.x = -450 + self.pos * 100
         self.y = 0
 
     def get_widget(self):
         w = Label(
             text=self.value,
-            pos=(self.x, self.y)
+            pos=(self.x, self.y),
+            color=self.colour
         )
         return w
 
@@ -79,10 +81,35 @@ class SwapDisplay():
         return w
 
 
+def generate_display(state_objs):
+    default_color = (1, 1, 1, 1)
+    swap_colour = (1, 0, 0, 1)
+    swapped = set()
+
+    if state_objs.get('swap', None):
+        for (v1, _, v2, _) in state_objs['swap']:
+            swapped |= set([v1, v2])
+
+    locations = [
+        (v, pos, swap_colour if v in swapped else default_color)
+        for (v, pos) in state_objs['location']
+    ]
+
+    return {
+        'location': locations
+    }
+
+
 display_classes = {
     'location': LocationDisplay,
     'swap': SwapDisplay
 }
 
-app = PylpsVisualiserApp(display_classes=display_classes, stepwise=True)
+display_funcs = [generate_display]
+
+app = PylpsVisualiserApp(
+    display_classes=display_classes,
+    display_funcs=display_funcs,
+    stepwise=True
+)
 app.run()

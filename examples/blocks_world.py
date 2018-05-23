@@ -111,11 +111,15 @@ def position_towers(towers):
     return pos_args
 
 
-def location_pos(locations):
+def location_pos(state_objects):
     height = 200
-    locations = sorted(locations)
+    locations = sorted(state_objects['location'])
     towers = generate_towers(locations)
-    return (height, position_towers(towers))
+
+    return {
+        'height': height,
+        'location': position_towers(towers)
+    }
 
 
 class LocationDisplay():
@@ -136,13 +140,11 @@ display_classes = {
     'location': LocationDisplay
 }
 
-position_funcs = {
-    'location': location_pos
-}
+display_funcs = [location_pos]
 
 app = PylpsVisualiserApp(
     display_classes=display_classes,
-    position_funcs=position_funcs,
+    display_funcs=display_funcs,
     stepwise=True)
 
 app.run()
