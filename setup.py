@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='pylps_vis',
     version='0.0.1',
-    description='LPS in python',
+    description='pyLPS visualiser',
 )
 
 # setup(

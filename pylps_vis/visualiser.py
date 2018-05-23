@@ -39,9 +39,11 @@ class VSDisplay(BoxLayout):
     identity = StringProperty()
     time = StringProperty()
 
-    def __init__(self, visual_state, display_classes):
+    def __init__(self, visual_state, display_classes, position_funcs):
         super().__init__()
         self.display_classes = display_classes
+        self.position_funcs = position_funcs
+
         self.identity = 'time' + str(visual_state.time)
         self.visual_state = visual_state
         self.time = str(self.visual_state.time)
@@ -50,15 +52,27 @@ class VSDisplay(BoxLayout):
         self.cnt = 0
 
         for cls_name, cls in self.display_classes.items():
+            pos_func = self.position_funcs.get(cls_name, None)
+
             if cls_name in self.visual_state.actions.keys():
-                for args in self.visual_state.actions[cls_name]:
+                states = self.visual_state.actions[cls_name]
+
+                if pos_func:
+                    states = pos_func(states)
+
+                for args in states:
                     self.display(ACTION, cls, list(args))
 
             if cls_name in self.visual_state.fluents.keys():
-                for args in self.visual_state.fluents[cls_name]:
+                states = self.visual_state.fluents[cls_name]
+                if pos_func:
+                    states = pos_func(states)
+
+                for args in states:
                     self.display(FLUENT, cls, list(args))
 
     def display(self, d_type, cls, args):
+
         w = cls(*args).get_widget()
 
         self.ids.tpdisplay.add_widget(w)
@@ -78,9 +92,11 @@ class PylpsMainScreen(Screen):
     max_time_str = StringProperty()
     exec_status = StringProperty()
 
-    def __init__(self, display_classes={}, stepwise=False):
+    def __init__(self, display_classes={}, position_funcs={}, stepwise=False):
         super().__init__()
         self.display_classes = display_classes
+        self.position_funcs = position_funcs
+
         self.current_time = 0
         self.manual = False
         self.vs_display_widgets = {}
@@ -101,7 +117,8 @@ class PylpsMainScreen(Screen):
             Clock.schedule_once(lambda dt: self.pylps_execute(), 0.01)
 
     def add_vs_display(self, visual_state):
-        widget = VSDisplay(visual_state, self.display_classes)
+        widget = VSDisplay(visual_state,
+                           self.display_classes, self.position_funcs)
         self.vs_display_widgets[visual_state.time] = widget
         self.ids.scrollgrid.add_widget(widget)
 
@@ -229,16 +246,18 @@ class PylpsMainScreen(Screen):
 
 class PylpsVisualiserApp(App):
 
-    def __init__(self, display_classes={}, stepwise=False):
+    def __init__(self, display_classes={}, position_funcs={}, stepwise=False):
         super().__init__()
 
         self.stepwise = stepwise
         self.display_classes = display_classes
+        self.position_funcs = position_funcs
 
     def build(self):
         # return PylpsMainScreen(self.states, self.display_classes)
         return PylpsMainScreen(
             display_classes=self.display_classes,
+            position_funcs=self.position_funcs,
             stepwise=self.stepwise)
 
 

@@ -1,6 +1,5 @@
 from pylps.core import *
-from pylps.visualiser import PylpsVisualiserApp
-from pylps.vis_object import PylpsVisObject, pylps_vis_meta
+from pylps_vis.visualiser import PylpsVisualiserApp
 from kivy.uix.label import Label
 
 initialise(max_time=10)
