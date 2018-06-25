@@ -11,10 +11,10 @@ kivy.require('1.0.7')
 
 
 class VisConfig(object):
-    def __init__(self, display_classes={}, position_funcs={},
+    def __init__(self, display_classes={}, display_funcs={},
                  stepwise=False):
         self.display_classes = display_classes
-        self.position_funcs = position_funcs
+        self.display_funcs = display_funcs
         self.stepwise = stepwise
 
 
@@ -165,11 +165,13 @@ class PylpsMainScreen(Screen):
 
     def pylps_execute_stepwise_helper(self):
         self.exec_debug_delay()
+
         if self.stepwise_exec:
             execute_next_step()
         else:
             self.stepwise_exec = True
             execute(stepwise=True)
+            execute_next_step()
 
         self.pylps_post_execute()
 
@@ -180,12 +182,12 @@ class PylpsMainScreen(Screen):
 
 class PylpsVisualiserApp(App):
 
-    def __init__(self, display_classes={}, position_funcs={}, stepwise=False):
+    def __init__(self, display_classes={}, display_funcs={}, stepwise=False):
         super().__init__()
 
         self.vis_config = VisConfig(
             display_classes=display_classes,
-            position_funcs=position_funcs,
+            display_funcs=display_funcs,
             stepwise=stepwise
         )
 
