@@ -12,7 +12,7 @@ create_events(
     'clear(_)', 'make_tower(_)',
     'make_on(_, _)', 'make_clear(_)',
 )
-create_variables('Block', 'Block1', 'Place', 'Places')
+create_variables('Block', 'Block1', 'Place', 'Places', 'A', 'B', 'C')
 
 initially(
     location('f', 'floor'), location('b', 'f'), location('e', 'b'),
@@ -49,7 +49,7 @@ goal(
     make_on(Block, Place).frm(T2, T3),
 )
 
-goal(make_on(Block, Place).frm(T1, T2)).requires(
+goal(make_on(Block, Place).frm(T1, T4)).requires(
     ~location(Block, Place).at(T1),
     make_clear(Place).frm(T1, T2),
     make_clear(Block).frm(T2, T3),

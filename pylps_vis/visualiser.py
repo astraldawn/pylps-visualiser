@@ -165,11 +165,13 @@ class PylpsMainScreen(Screen):
 
     def pylps_execute_stepwise_helper(self):
         self.exec_debug_delay()
+
         if self.stepwise_exec:
             execute_next_step()
         else:
             self.stepwise_exec = True
             execute(stepwise=True)
+            execute_next_step()
 
         self.pylps_post_execute()
 

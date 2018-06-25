@@ -9,11 +9,11 @@ create_actions('swap(_, _, _, _)')
 create_events('swapped(_, _, _, _)')
 create_variables('X', 'Y', 'Z', 'N1', 'N2', 'N3')
 
-observe(swap('e', 5, 'f', 6).frm(5, 6))
+observe(swap('E', 5, 'F', 6).frm(5, 6))
 
 initially(
-    location('d', 1), location('c', 2), location('b', 3), location('a', 4),
-    location('f', 5), location('e', 6)
+    location('D', 1), location('C', 2), location('B', 3), location('A', 4),
+    location('F', 5), location('E', 6)
 )
 
 reactive_rule(
@@ -51,17 +51,18 @@ false_if(swap(X, N1, Y, N2), swap(Y, N2, Z, N3),)
 
 class LocationDisplay():
     def __init__(self, *args):
-        self.value = args[0]
+        self.value = '[b][size=30]' + args[0] + '[/size][/b]'
         self.pos = args[1]
         self.colour = args[2]
-        self.x = -450 + self.pos * 100
+        self.x = -400 + self.pos * 100
         self.y = 0
 
     def get_widget(self):
         w = Label(
             text=self.value,
             pos=(self.x, self.y),
-            color=self.colour
+            color=self.colour,
+            markup=True,
         )
         return w
 
@@ -70,7 +71,7 @@ class SwapDisplay():
     def __init__(self, *args):
         self.pos1 = args[1]
         self.pos2 = args[3]
-        self.x = -400 + self.pos1 * 100
+        self.x = -350 + self.pos1 * 100
         self.y = 20
 
     def get_widget(self):
@@ -83,7 +84,7 @@ class SwapDisplay():
 
 def generate_display(state_objs):
     default_color = (1, 1, 1, 1)
-    swap_colour = (1, 0, 0, 1)
+    swap_colour = (1, 0.5, 0, 1)
     swapped = set()
 
     if state_objs.get('swap', None):
